@@ -2,8 +2,7 @@
 
 local Keycheck = _G.Key  -- Fetch the key from the global variable
 
-if Keycheck == "Free [Key]" then
-
+if Keycheck == "1234" then
 
 
 --//---//----//---//---//----//---//---//----//---//---//----//---//---//----//
@@ -1081,7 +1080,7 @@ end)
 
 
 -- กำหนดค่าเริ่มต้นให้ _G.FastShake เป็น false ถ้ายังไม่ได้ตั้งค่า
-if Keycheck == "Admin/*/ [Key]" then
+elseif Keycheck == "Admin/*/ [Key]" then
 
 
 --//---//----//---//---//----//---//---//----//---//---//----//---//---//----//
