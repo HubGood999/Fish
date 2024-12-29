@@ -2,7 +2,7 @@
 
 local Keycheck = _G.Key  -- Fetch the key from the global variable
 
-if Keycheck == "1234" then
+if Keycheck == "[FREE] Key" then
 
 
 --//---//----//---//---//----//---//---//----//---//---//----//---//---//----//
