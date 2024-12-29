@@ -1,4 +1,4 @@
-_G.Key = "Free [Key]"  -- Set the correct key
+
 
 local Keycheck = _G.Key  -- Fetch the key from the global variable
 
