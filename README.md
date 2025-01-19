@@ -1893,8 +1893,8 @@ local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
 Dropdown:SetValue("Long Rod [4500C$]")
 
 -- ฟังก์ชันอัพเดตค่า Dropdown เมื่อมีการเปลี่ยนแปลง
-Dropdown:OnChanged(function(selected)
-    _G.SelectIsland = selected -- อัปเดตค่าตัวแปรสำหรับเลือกคันเบ็ด
+Dropdown:OnChanged(function(selected1)
+    _G.SelectRod = selected1 -- อัปเดตค่าตัวแปรสำหรับเลือกคันเบ็ด
 end)
 
 Tabs.Shop:AddButton({
@@ -1930,8 +1930,8 @@ Tabs.Shop:AddButton({
             ["Stone Rod [3000C$]"] = CFrame.new(5502.51, 146.77, -313.90),
             ["Lucky Rod [5250C$]"] = CFrame.new(445.53, 152.93, 221.11),
         }
-    if _G.SelectIsland then
-            local targetPosition = teleportPositions[_G.SelectIsland]
+    if _G.SelectRod then
+            local targetPosition = teleportPositions[_G.SelectRod]
             if targetPosition then
                 -- เก็บตำแหน่งปัจจุบันก่อนวาร์ป
                 local currentPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
@@ -1971,14 +1971,105 @@ Tabs.Shop:AddButton({
 })
 
 
--- Storage for saved positions
+local section = Tabs.Shop:AddSection("Buy Totem")
+local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
+    Title = "Selector Totem",
+    Values = { 
+        "Sundial Totem [2000C$]", 			
+        "Smokescreen Totem [2000$]", 
+        "Windset Totem [2000$]", 
+        "Tempest Totem [2000$]", 
+        "Aurora Totem [750000$]", 
+        "Eclipse Totem [250000$]", 
+        "Meteor Totem [75000C$]", 
+        "Blizzard Totem [250000C$]", 
+        "Avalanche Totem [150000$]", 
+    }, 
+    Multi = false,
+    Default = "Long Rod [4500C$]" -- ต้องให้ค่าตรงกับ Values
+})
+
+
+-- ฟังก์ชันอัพเดตค่า Dropdown เมื่อมีการเปลี่ยนแปลง
+Dropdown:OnChanged(function(selected2)
+    _G.SelectTotem = selected2 -- อัปเดตค่าตัวแปรสำหรับเลือกคันเบ็ด
+end)
+Tabs.Shop:AddButton({
+    Title = "Buy Totem",
+    Description = "Buy selector totem.",
+    Callback = function()
+        local teleportPositions = {
+            ["Sundial Totem [2000C$]"] = CFrame.new(-1147.37671, 134.5, -1074.64368),
+            ["Smokescreen Totem [2000$]"] = CFrame.new(2791.70142, 139.729599, -629.47113),
+            ["Windset Totem [2000$]"] = CFrame.new(2851.59619, 179.878937, 2703.08936),
+            ["Tempest Totem [2000$]"] = CFrame.new(36.2399902, 135.413315, 1946.10913),
+            ["Aurora Totem [750000$]"] = CFrame.new(-1812.42847, -136.927933, -3280.7124),
+            ["Eclipse Totem [250000$]"] = CFrame.new(5969.2002, 274.111359, 839.5),
+            ["Meteor Totem [75000C$]"] = CFrame.new(-1948.30005, 275.35672, 228.599991),
+            ["Blizzard Totem [250000C$]"] = CFrame.new(20145, 742.952759, 5805),
+            ["Avalanche Totem [150000$]"] = CFrame.new(19712.1152, 467.630585, 6054.31787),
+        }
+
+        for i = 1, tonumber(_G.Name) do
+            wait(0.5) 
+
+            if _G.SelectTotem then
+                local targetPosition = teleportPositions[_G.SelectTotem]
+                if targetPosition then
+                    -- เก็บตำแหน่งปัจจุบันก่อนวาร์ป
+                    local currentPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+
+                    -- วาร์ปไปยังตำแหน่งที่เลือก
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = targetPosition
+                    
+                    -- หน่วงเวลาเพื่อให้ตัวละครโหลดก่อนกดปุ่ม E
+                    task.wait(0.005)
+
+                    -- จำลองการกดปุ่ม "E"
+                    game:service('VirtualInputManager'):SendKeyEvent(true, "E", false, game)
+                    task.wait(0.005)
+                    game:service('VirtualInputManager'):SendKeyEvent(false, "E", false, game)
+
+                    -- ตรวจสอบ UI และกดปุ่มยืนยันถ้ามี
+                    task.wait(0.1)
+                    local playerGui = game:GetService("Players").LocalPlayer.PlayerGui
+                    if playerGui:FindFirstChild("over") and playerGui.over:FindFirstChild("prompt") then
+                        local prompt = playerGui.over.prompt
+                        if prompt:FindFirstChild("confirm") then
+                            for _, connection in pairs(getconnections(prompt.confirm.MouseButton1Click)) do
+                                if connection.Function then
+                                    connection.Function()
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentPosition
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+})
+
+-- ส่วนของ Input ที่รับค่าจำนวนรอบ
+Tabs.Shop:AddInput("Input", {
+    Title = "Totem Amount",
+    Default = "5",  -- ค่าดีฟอลต์
+    Placeholder = "",
+    Numeric = true,
+    Finished = false,
+    Callback = function(value)
+        _G.Name = tonumber(value) or 1  -- ตรวจสอบและกำหนดค่าเริ่มต้นหากไม่มีการป้อนค่า
+    end
+})
+
 local SavedPositions = {}
 
--- Input for filename
+
+-- ช่องป้อนชื่อไฟล์
 local FileInput = Tabs.file:AddInput("FileNameInput", {
-    Title = "Enter File Name",
+    Title = "Enter Name File",  -- แสดงเป็นภาษาไทย
     Default = "",
-    Placeholder = "Type here...",
+    Placeholder = "",
     Numeric = false,
     Finished = true -- กด Enter เพื่อบันทึกค่า
 })
@@ -2007,7 +2098,6 @@ FileInput:OnChanged(function(Value)
         updateDropdown()
     end
 end)
-
 -- Button to set current position
 Tabs.file:AddButton({
     Title = "SetCF",
