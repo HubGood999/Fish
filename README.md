@@ -2,10 +2,11 @@
 
 
 
-
 setfpscap(1)
 wait(5)
 setfpscap(999)
+
+
 
 --//---//----//---//---//----//---//---//----//---//---//----//---//---//----//
 --// XXX Hub by XXX --//
@@ -455,6 +456,7 @@ local Tabs = {
     Farm = Window:AddTab({ Title = "Farm", Icon = "gem" }),
     Event = Window:AddTab({ Title = "Event", Icon = "fan" }),
     Enchant = Window:AddTab({ Title = "Enchant", Icon = "mountain" }),
+    file = Window:AddTab({ Title = "Teleport to File", Icon = "file" }),
     Players = Window:AddTab({ Title = "Players", Icon = "user" }),
     Miscellaneous = Window:AddTab({ Title = "Miscellaneous", Icon = "align-justify" }),
     Shop = Window:AddTab({ Title = "Shop", Icon = "shopping-cart" }),
@@ -1855,6 +1857,7 @@ local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
         "Long Rod [4500C$]", 
         "Fortune Rod [12750C$]", 
         "Aurora Rod [90000C$]", 
+        "Midas Rod [55000C$]", 
         "Steady Rod [7000C$]", 
         "Rod Of The Depths [75000C$]", 
         "Training Rod [300C$]", 
@@ -1866,7 +1869,9 @@ local Dropdown = Tabs.Shop:AddDropdown("Dropdown", {
         "Rapid Rod [14000C$]", 
         "Flimsy Rod [0C$]", 
         "Fast Rod [4500C$]", 
+        "Firework Rod [35000C$]", 
         "Scurvy Rod [50000C$]", 
+        "Mythical Rod [110000C$]", 
         "Kings Rod [120000C$]", 
         "Carbon Rod [2000C$]", 
         "Summit Rod [300000C$]", 
@@ -1961,6 +1966,88 @@ Tabs.Shop:AddButton({
                     end
                 end
             end
+        end
+    end
+})
+
+
+-- Storage for saved positions
+local SavedPositions = {}
+
+-- Input for filename
+local FileInput = Tabs.file:AddInput("FileNameInput", {
+    Title = "Enter File Name",
+    Default = "",
+    Placeholder = "Type here...",
+    Numeric = false,
+    Finished = true -- กด Enter เพื่อบันทึกค่า
+})
+
+-- Dropdown for selecting files
+local Dropdown = Tabs.file:AddDropdown("FileDropdown", {
+    Title = "Select File",
+    Values = {},
+    Multi = false,
+    Default = nil
+})
+
+-- Function to update Dropdown values
+local function updateDropdown()
+    local fileNames = {}
+    for name, _ in pairs(SavedPositions) do
+        table.insert(fileNames, name)
+    end
+    Dropdown:SetValues(fileNames)
+end
+
+-- Add new filename when pressing Enter
+FileInput:OnChanged(function(Value)
+    if Value and Value ~= "" and not SavedPositions[Value] then
+        SavedPositions[Value] = {x = 0, y = 0, z = 0}
+        updateDropdown()
+    end
+end)
+
+-- Button to set current position
+Tabs.file:AddButton({
+    Title = "SetCF",
+    Callback = function()
+        local selectedFile = Dropdown.Value
+        if selectedFile and SavedPositions[selectedFile] then
+            local character = game.Players.LocalPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local pos = character.HumanoidRootPart.Position
+                SavedPositions[selectedFile] = {x = pos.X, y = pos.Y, z = pos.Z}
+            end
+        end
+    end
+})
+
+-- Button to teleport to saved position
+Tabs.file:AddButton({
+    Title = "Teleport",
+    Callback = function()
+        local selectedFile = Dropdown.Value
+        if selectedFile and SavedPositions[selectedFile] then
+            local position = SavedPositions[selectedFile]
+            local character = game.Players.LocalPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = CFrame.new(position.x, position.y, position.z)
+            end
+        end
+    end
+})
+
+-- Button to delete the selected file from the dropdown
+Tabs.file:AddButton({
+    Title = "Delete File All",
+    Callback = function()
+        local selectedFile = Dropdown.Value
+        if selectedFile and SavedPositions[selectedFile] then
+            SavedPositions[selectedFile] = nil -- Remove the selected file from the table
+            updateDropdown() -- Update the dropdown list
+            print("Deleted file:", selectedFile)
+            Dropdown:SetValue(nil) -- Clear the dropdown selection
         end
     end
 })
