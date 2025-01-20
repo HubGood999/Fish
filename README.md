@@ -2,8 +2,6 @@
 
 
 
-
-
 setfpscap(1)
 wait(5)
 setfpscap(999)
@@ -446,7 +444,7 @@ local Window = Fluent:CreateWindow({
     Title = "XXX hub [FREE]",
     SubTitle = "by 999",
     TabWidth = 160,
-    Size = UDim2.fromOffset(555, 355),
+    Size = UDim2.fromOffset(580, 460),
     Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
     Theme = "Values",
     MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
@@ -542,36 +540,42 @@ task.wait(0)  -- Add delay to prevent overloading the server
 end)
 
             end
+
+                local Dropdown = Tabs.AutoFishing:AddDropdown("Dropdown", {
+        Title = "Select Bait",
+        Values = {"Magnet", "Worm", "Peppermint Worm", "Coal", "Squid", "Shrimp", "Insect", "Give", "Night Shrimp", "Deep Coral", "Super Flakes", "Swaweed", "Instant", "Shark Head", "Fish Head", "Weird Algae", "Garbage",  "Holly Berry", "Rapid Catcher", "Minnow", "Coral", "Flakes", "Aurora Bait", "Bagel", "Truffle Worm"},
+        Multi = false,
+        Default = 1,
+    })
+
+    Dropdown:OnChanged(function(Value)
+        _G.Bait =  Value
+    end)
 local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
     Title = "Auto Use Bait", 
     Default = false, 
     Description = "Automatically use vait when fishing."  -- Adding description to the toggle
 })
-    Toggle:OnChanged(function()
- 
+    Toggle:OnChanged(function(V)
+    _G.Bait_X = V
+spawn(function()
+    while task.wait(0.5) do
+        pcall(function()
+        if _G.Bait_X then
+
+             local ohString1 = _G.Bait
+
+game:GetService("ReplicatedStorage").packages.Net["RE/Bait/Equip"]:FireServer(ohString1)
+           end
+        end)
+    end
+end)
+
+    
     end)
     
 
-      local MultiDropdown = Tabs.AutoFishing:AddDropdown("MultiDropdown", {
-        Title = "Select Bait",
-        Description = "",
-        Values = {"Magnet", "Worm", "Peppermint Worm", "Coal", "Squid", "Shrimp", "Insect", "Give", "Night Shrimp", "Deep Coral", "Super Flakes", "Swaweed", "Instant", "Shark Head", "Fish Head", "Weird Algae", "Garbage",  "Holly Berry", "Rapid Catcher", "Minnow", "Coral", "Flakes", "Aurora Bait", "Bagel", "Truffle Worm"},
-        Multi = true,
-        Default = {"seven", "twelve"},
-    })
 
-    MultiDropdown:SetValue({
-        three = true,
-        five = true,
-        seven = false
-    })
-
-    MultiDropdown:OnChanged(function(Value)
-        local Values = {}
-        for Value, State in next, Value do
-            table.insert(Values, Value)
-        end
-    end)
 
 local Toggle = Tabs.AutoFishing:AddToggle("MyToggle", {
     Title = "Auto FastShake", 
@@ -993,37 +997,38 @@ Toggle:OnChanged(function(state)
 end)
 
 
-local rodsFarmSection = Tabs.Farm:AddSection("Rods Farm")
+local rodsFarmSection = Tabs.Farm:AddSection("ฟาร์มคันเบ็ด")  -- แสดงเป็นภาษาไทย
 
 local AutoTridentRod = rodsFarmSection:AddToggle("AutoTridentRod", {
-    Title = "Auto Trident Rod",
+    Title = "ฟาร์มไตรเดนท์อัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = _G.Toggle,
-    Description = "Automatically enables trident rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดไตรเดนท์โดยอัตโนมัติ"
 })
 
 local AutoAuroraRod = rodsFarmSection:AddToggle("AutoAuroraRod", {
-    Title = "Auto Aurora Rod",
+    Title = "ฟาร์มออโรร่าอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables aurora rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดออโรร่าโดยอัตโนมัติ"
 })
 
 local AutoKingsRod = rodsFarmSection:AddToggle("AutoKingsRod", {
-    Title = "Auto Kings Rod",
+    Title = "ฟาร์มคิงส์อัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables kings rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดคิงส์โดยอัตโนมัติ"
 })
 
 local AutoDestinyRod = rodsFarmSection:AddToggle("AutoDestinyRod", {
-    Title = "Auto Destiny Rod",
+    Title = "ฟาร์มเดสทินีอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables destiny rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดเดสทินีโดยอัตโนมัติ"
 })
 
 local AutoMythicalRod = rodsFarmSection:AddToggle("AutoMythicalRod", {
-    Title = "Auto Mythical Rod",
+    Title = "ฟาร์มมิธิคอลอัตโนมัติ",  -- แสดงเป็นภาษาไทย
     Default = false,
-    Description = "Automatically enables mythical rod farming"
+    Description = "เปิดใช้งานการฟาร์มคันเบ็ดมิธิคอลโดยอัตโนมัติ"
 })
+
 
 function buy1()
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-932, 226, -991)
@@ -1165,35 +1170,6 @@ AutoTridentRod:OnChanged(function(value)
             end
         end
     end
-end)
-
-
-
-   
-
-
-
-
-
-
-
-
-
-
-AutoAuroraRod:OnChanged(function(value)
-    print("Auto Aurora Rod: " .. tostring(value))
-end)
-
-AutoKingsRod:OnChanged(function(value)
-    print("Auto Kings Rod: " .. tostring(value))
-end)
-
-AutoDestinyRod:OnChanged(function(value)
-    print("Auto Destiny Rod: " .. tostring(value))
-end)
-
-AutoMythicalRod:OnChanged(function(value)
-    print("Auto Mythical Rod: " .. tostring(value))
 end)
 
 
@@ -2264,7 +2240,7 @@ Dropdown:OnChanged(function(Value)
 end)
 
 -- ตั้งค่าเริ่มต้นให้เป็นธีม "Dark"
-Dropdown:SetValue("Aqua")
+Dropdown:SetValue("Rose")
 
 
 local Slider = Tabs.Settings:AddSlider("Slider", {
