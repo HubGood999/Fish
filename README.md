@@ -2,6 +2,8 @@
 
 
 
+
+
 setfpscap(1)
 wait(5)
 setfpscap(999)
@@ -991,6 +993,209 @@ Toggle:OnChanged(function(state)
 end)
 
 
+local rodsFarmSection = Tabs.Farm:AddSection("Rods Farm")
+
+local AutoTridentRod = rodsFarmSection:AddToggle("AutoTridentRod", {
+    Title = "Auto Trident Rod",
+    Default = _G.Toggle,
+    Description = "Automatically enables trident rod farming"
+})
+
+local AutoAuroraRod = rodsFarmSection:AddToggle("AutoAuroraRod", {
+    Title = "Auto Aurora Rod",
+    Default = false,
+    Description = "Automatically enables aurora rod farming"
+})
+
+local AutoKingsRod = rodsFarmSection:AddToggle("AutoKingsRod", {
+    Title = "Auto Kings Rod",
+    Default = false,
+    Description = "Automatically enables kings rod farming"
+})
+
+local AutoDestinyRod = rodsFarmSection:AddToggle("AutoDestinyRod", {
+    Title = "Auto Destiny Rod",
+    Default = false,
+    Description = "Automatically enables destiny rod farming"
+})
+
+local AutoMythicalRod = rodsFarmSection:AddToggle("AutoMythicalRod", {
+    Title = "Auto Mythical Rod",
+    Default = false,
+    Description = "Automatically enables mythical rod farming"
+})
+
+function buy1()
+game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-932, 226, -991)
+wait(5)
+local merlinPower = workspace.world.npcs.Merlin.Merlin.power
+
+if merlinPower and merlinPower.InvokeServer then
+    for i = 1, 5 do
+        local success, result = pcall(function()
+            return merlinPower:InvokeServer()
+        end)
+
+        if success then
+            if result then
+            else
+            end
+        end
+    end
+end
+end
+
+
+function Enchant()
+local player = game:GetService("Players").LocalPlayer
+local enchantRelic = player.Backpack:FindFirstChild("Enchant Relic")
+
+if enchantRelic and enchantRelic:IsA("Tool") then
+    player.Character.Humanoid:EquipTool(enchantRelic)
+   end
+end
+
+
+ 
+
+function E2()
+				game:service('VirtualInputManager'):SendKeyEvent(true, "E", false, game)
+                task.wait(0)
+				game:service('VirtualInputManager'):SendKeyEvent(false, "E", false, game)
+end
+function prompt()
+for _, prompt in ipairs(workspace:GetDescendants()) do
+    if prompt:IsA("ProximityPrompt") then
+        prompt.HoldDuration = 0  -- ตั้ง HoldDuration เป็น 0
+        prompt.MaxActivationDistance = 100  -- ตั้ง MaxActivationDistance เป็น 100
+    end
+end
+end
+
+
+spawn(function()
+    while task.wait(0) do
+        pcall(function()
+        if _G.E then
+
+            E2()
+           end
+        end)
+    end
+end)
+
+spawn(function()
+    while task.wait(0) do
+        pcall(function()
+        if _G.prompt then
+
+            prompt()
+           end
+        end)
+    end
+end)
+
+
+AutoTridentRod:OnChanged(function(value)
+    if value then
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        
+        -- ยกเลิกการถืออาวุธทั้งหมด
+        for _, tool in ipairs(character:GetChildren()) do
+            if tool:IsA("Tool") then
+                tool.Parent = player.Backpack -- นำไอเท็มกลับไปที่กระเป๋า
+            end
+        end
+
+        local backpack = player.Backpack
+        if not backpack:FindFirstChild("Trident Rod") then
+            game:GetService("ReplicatedStorage"):WaitForChild("packages"):WaitForChild("Net"):WaitForChild("RE/Rod/Equip"):FireServer("Trident Rod")
+            wait(0.1)
+        end
+        
+        if backpack:FindFirstChild("Trident Rod") then
+            AutoTridentRod:SetValue(false)
+        else
+            buy1()
+            _G.E = true
+            wait(6)
+            E2()
+            wait(1)
+            Enchant()
+            E2()
+
+            -- ลำดับการเคลื่อนที่เพื่อทำ Enchant ซ้ำๆ
+            local positions = {
+                Vector3.new(-1464.96, -221.73, -2328.54),
+                Vector3.new(-1471.13, -221.73, -2331.64),
+                Vector3.new(-1479.41, -221.73, -2333.04),
+                Vector3.new(-1487.59, -221.74, -2332.75),
+                Vector3.new(-1493.40, -221.73, -2329.21),
+            }
+
+            for _, pos in ipairs(positions) do
+                _G.prompt = true
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(pos)
+                wait(3)
+                Enchant()
+                E2()
+            end
+
+            wait(5)
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1484.65, -223.49, -2195.60)
+            local VirtualInputManager = game:GetService('VirtualInputManager')
+
+            -- กดปุ่ม E เพื่อดำเนินการ
+            VirtualInputManager:SendKeyEvent(true, "E", false, game)
+            task.wait(0.005)
+            VirtualInputManager:SendKeyEvent(false, "E", false, game)
+            _G.prompt = false
+
+            -- ตรวจสอบ UI และกดปุ่มยืนยันถ้ามี
+            task.wait(0.1)
+            local overGui = player.PlayerGui:FindFirstChild("over")
+            if overGui and overGui:FindFirstChild("prompt") and overGui.prompt:FindFirstChild("confirm") then
+                for _, connection in pairs(getconnections(overGui.prompt.confirm.MouseButton1Click)) do
+                    if connection.Function then
+                        connection.Function()
+                        wait(3)
+                    end
+                end
+            end
+        end
+    end
+end)
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+AutoAuroraRod:OnChanged(function(value)
+    print("Auto Aurora Rod: " .. tostring(value))
+end)
+
+AutoKingsRod:OnChanged(function(value)
+    print("Auto Kings Rod: " .. tostring(value))
+end)
+
+AutoDestinyRod:OnChanged(function(value)
+    print("Auto Destiny Rod: " .. tostring(value))
+end)
+
+AutoMythicalRod:OnChanged(function(value)
+    print("Auto Mythical Rod: " .. tostring(value))
+end)
+
 
 
 -- Add a toggle to the Farm tab
@@ -1650,6 +1855,230 @@ Toggle:OnChanged(function(ToggleState)
         end
     end)
 end)
+
+local section = Tabs.Event:AddSection("Megalodon Farm")
+
+local Toggle = Tabs.Event:AddToggle("AutoMegalodonEvent", {
+    Title = "Auto Megalodon Event",
+    Default = false,
+    Description = "Automatically search for the Megalodon Event by continuously using the Sundial Totem."
+})
+  Toggle:OnChanged(function(v)
+
+_G.CFrameMegalodon = v
+_G.PartMegalodon1 = v
+_G.Totem = v
+_G.Button = v
+_G.CFrameMegalodon = false
+_G.PartMegalodon1 = false
+_G.Totem = false
+_G.Button = false
+_G.CFrameMegalodon = v
+_G.PartMegalodon1 = v
+_G.Totem = v
+_G.Button = v
+_G.Rod = v
+_G.Rod = false
+end)
+
+local Toggle = Tabs.Event:AddToggle("AutoBuySundialTotem", {
+    Title = "Auto Buy Sundial Totem",
+    Default = false,
+    Description = "Automatically purchase a Sundial Totem when it runs out."
+})
+
+    Toggle:OnChanged(function(v)
+
+_G.ERER = v
+_G.over =  v
+_G.Totem =  v
+_G.Button =  v
+_G.over = false
+_G.Totem = false
+_G.Button = false
+_G.ERER = v
+_G.over =  v
+_G.Totem =  v
+_G.Button =  v
+
+if not _G.ERER then
+    _G.ERER = false  -- กำหนดค่าเริ่มต้นให้เป็น false
+end
+
+task.spawn(function()
+    while true do  -- ลูปแบบต่อเนื่อง
+        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
+
+        if _G.ERER then
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local player = game.Players.LocalPlayer
+local inventory = ReplicatedStorage.playerstats[player.Name].Inventory
+local G = {}  -- สมมุติว่ามีตัวแปร G ที่คุณใช้
+
+for _, item in pairs(inventory:GetChildren()) do
+    if string.find(item.Name, "^Sundial Totem") then  -- ตรวจสอบว่าเริ่มต้นด้วย "Ancient Megalodon"
+        if item:FindFirstChild("Stack") then
+            local StackValue = item.Stack.Value
+            if StackValue > 2 then
+_G.over = false
+_G.Totem = true
+_G.Button = true
+
+            elseif StackValue < 2 then
+_G.over = true
+_G.Totem = false
+_G.Button = false
+
+            elseif StackValue == 2 then
+_G.over = true
+_G.Totem = false
+_G.Button = false
+            end
+            end
+            end
+end
+end
+end
+end)
+
+
+    end)
+
+if not _G.CFrameMegalodon then
+    _G.CFrameMegalodon = false  -- กำหนดค่าเริ่มต้นให้เป็น false
+end
+
+task.spawn(function()
+    while true do  -- ลูปแบบต่อเนื่อง
+        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
+
+        if _G.CFrameMegalodon then
+
+local target = workspace.zones.fishing:FindFirstChild("Megalodon Default") -- ค้นหาเป้าหมาย
+
+if target then
+    -- ตรวจสอบว่ามี HumanoidRootPart ของผู้เล่น
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    -- วาร์ปตัวละครไปยังตำแหน่งของเป้าหมาย
+    humanoidRootPart.CFrame = target.CFrame * CFrame.new(0, 10, 0)  -- การยกตัวขึ้นเล็กน้อยจากตำแหน่งเป้าหมาย
+end
+
+
+end
+end
+end)
+
+
+
+if not _G.PartMegalodon1 then
+    _G.PartMegalodon1 = false  -- กำหนดค่าเริ่มต้นให้เป็น false
+end
+
+task.spawn(function()
+    while true do  -- ลูปแบบต่อเนื่อง
+        task.wait(3)  -- หยุดรอ 3 วินาที
+
+        if _G.PartMegalodon1 then
+            -- ค้นหาเป้าหมายใน workspace.zones.fishing
+            local fishingZone = workspace.zones.fishing:FindFirstChild("Megalodon Default")
+
+            -- ตรวจสอบว่าพบเป้าหมายหรือไม่
+            if fishingZone then
+                _G.Totem = false
+_G.Button = false
+_G.ERER = false     
+_G.Rod = true
+
+                local block = Instance.new("Part")
+                block.Size = Vector3.new(4, 1, 4)  -- ขนาดบล็อก
+                block.CFrame = fishingZone.CFrame * CFrame.new(0, 5, 0)  -- วางบล็อกด้านบนของเป้าหมาย
+                block.Anchored = true  -- ทำให้บล็อกไม่ตก
+                block.Color = Color3.fromRGB(255, 0, 0)  -- สีของบล็อก
+                block.Parent = workspace  -- เพิ่มบล็อกลงใน workspace
+                else
+                _G.Totem = true
+_G.Button = true
+_G.ERER = true    
+_G.Rod = false
+            end
+        end
+    end
+end)
+
+
+
+if not _G.Totem then
+    _G.Totem = false  -- กำหนดค่าเริ่มต้นให้เป็น false
+end
+
+task.spawn(function()
+    while true do  -- ลูปแบบต่อเนื่อง
+        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
+
+        if _G.Totem then
+
+-- ตรวจสอบว่า "Sundial Totem" อยู่ใน Backpack ของผู้เล่น
+local player = game:GetService("Players").LocalPlayer
+local totem = player.Backpack:FindFirstChild("Sundial Totem")
+
+-- ถ้าพบ "Sundial Totem" ใน Backpack
+if totem then
+    -- ตั้งค่าให้ "Sundial Totem" เป็นเครื่องมือที่ผู้เล่นถือ
+    player.Character:WaitForChild("Humanoid"):EquipTool(totem)
+ 
+end
+end
+end
+end)
+
+
+
+
+if not _G.Button then
+    _G.Button = false  -- กำหนดค่าเริ่มต้นให้เป็น false
+end
+
+task.spawn(function()
+    while true do  -- ลูปแบบต่อเนื่อง
+        task.wait(1)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
+
+        if _G.Button then
+    game:GetService'VirtualUser':CaptureController()
+    game:GetService'VirtualUser':Button1Down(Vector2.new(1280, 670))
+end
+end
+end)
+
+if not _G.over then
+    _G.over = false  -- กำหนดค่าเริ่มต้นให้เป็น false
+end
+
+task.spawn(function()
+    while true do  -- ลูปแบบต่อเนื่อง
+        task.wait(0)  -- หยุดรอสั้นๆ เพื่อหลีกเลี่ยงการแฮงค์
+
+        if _G.over then
+ game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1148, 135, -1075) 
+game:service('VirtualInputManager'):SendKeyEvent(true, "E", false, game)
+game:service('VirtualInputManager'):SendKeyEvent(false, "E", false, game)
+local player = game:GetService("Players").LocalPlayer
+
+
+local overPrompt = player.PlayerGui:FindFirstChild("over") and player.PlayerGui.over:FindFirstChild("prompt")
+if overPrompt and overPrompt.confirm then
+    local confirmButtonOver = overPrompt.confirm
+    for _, connection in pairs(getconnections(confirmButtonOver.MouseButton1Click)) do
+        connection.Function(confirmButtonOver)
+    end
+end
+end
+end
+end)
+
 
   local section = Tabs.Enchant:AddSection("Enchant Relic")
 local Dropdown = Tabs.Enchant:AddDropdown("Dropdown", {
