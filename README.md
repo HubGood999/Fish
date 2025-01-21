@@ -997,37 +997,39 @@ Toggle:OnChanged(function(state)
 end)
 
 
-local rodsFarmSection = Tabs.Farm:AddSection("ฟาร์มคันเบ็ด")  -- แสดงเป็นภาษาไทย
+
+local rodsFarmSection = Tabs.Farm:AddSection("Rods Farm")
 
 local AutoTridentRod = rodsFarmSection:AddToggle("AutoTridentRod", {
-    Title = "ฟาร์มไตรเดนท์อัตโนมัติ",  -- แสดงเป็นภาษาไทย
+    Title = "Auto Trident Rod",
     Default = _G.Toggle,
-    Description = "เปิดใช้งานการฟาร์มคันเบ็ดไตรเดนท์โดยอัตโนมัติ"
+    Description = "Automatically enables trident rod farming"
 })
 
 local AutoAuroraRod = rodsFarmSection:AddToggle("AutoAuroraRod", {
-    Title = "ฟาร์มออโรร่าอัตโนมัติ",  -- แสดงเป็นภาษาไทย
+    Title = "Auto Aurora Rod",
     Default = false,
-    Description = "เปิดใช้งานการฟาร์มคันเบ็ดออโรร่าโดยอัตโนมัติ"
+    Description = "Automatically enables aurora rod farming"
 })
 
 local AutoKingsRod = rodsFarmSection:AddToggle("AutoKingsRod", {
-    Title = "ฟาร์มคิงส์อัตโนมัติ",  -- แสดงเป็นภาษาไทย
+    Title = "Auto Kings Rod",
     Default = false,
-    Description = "เปิดใช้งานการฟาร์มคันเบ็ดคิงส์โดยอัตโนมัติ"
+    Description = "Automatically enables kings rod farming"
 })
 
 local AutoDestinyRod = rodsFarmSection:AddToggle("AutoDestinyRod", {
-    Title = "ฟาร์มเดสทินีอัตโนมัติ",  -- แสดงเป็นภาษาไทย
+    Title = "Auto Destiny Rod",
     Default = false,
-    Description = "เปิดใช้งานการฟาร์มคันเบ็ดเดสทินีโดยอัตโนมัติ"
+    Description = "Automatically enables destiny rod farming"
 })
 
 local AutoMythicalRod = rodsFarmSection:AddToggle("AutoMythicalRod", {
-    Title = "ฟาร์มมิธิคอลอัตโนมัติ",  -- แสดงเป็นภาษาไทย
+    Title = "Auto Mythical Rod",
     Default = false,
-    Description = "เปิดใช้งานการฟาร์มคันเบ็ดมิธิคอลโดยอัตโนมัติ"
+    Description = "Automatically enables mythical rod farming"
 })
+
 
 
 function buy1()
